@@ -1,0 +1,29 @@
+--------------------------------------------------------
+
+
+'! Mit dieser Routine können innerhalb ein Webtable bestimmte SPAN ELEMENT geklickt werden
+'!
+
+
+sub Mark (WebTable_inWhich_toFind, SPAN_text_toClick, index)
+     
+     Set webElementX_desc= nothing
+     Set webElementX_desc = Description.Create
+     webElementX_desc("micclass").value = "WebElement"
+     webElementX_desc("html tag").value = "SPAN"
+     
+     webElementX_desc("innertext").value = SPAN_text_toClick
+     Set webElementX_Child = WebTable_inWhich_toFind.ChildObjects(webElementX_desc)
+     child_count = webElementX_Child.count()
+     
+     	If child_count > 0 Then
+     		newindex = index - 1
+     		webElementX_Child(newindex).highlight
+     	 	webElementX_Child(newindex).click
+		else
+			Reporter.ReportEvent micFail,SPAN_text_toSearch,SPAN_text_toSearch + " ist nicht verfügbar"
+		End If
+	Set webElementX_desc= nothing
+	Set WebTable_inWhich_toFind = nothing
+	Set webElementX_Child = nothing
+End sub

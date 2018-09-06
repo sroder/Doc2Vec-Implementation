@@ -1,0 +1,11 @@
+------------------------------------------------------------------------------------------------------------------
+'! Routine klickt auf den Cancel-Button in der Buttonleiste. Der aktuelle Vorgang wird abgebrochen.
+'! 
+'!
+'!
+Public Sub PressCancel()
+	
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Cancel").Click
+	wait 2
+
+End Sub

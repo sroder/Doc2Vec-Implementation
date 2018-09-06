@@ -1,0 +1,11 @@
+'-----------------------------------------------------------------------------------------------------------------------------------------------
+'! Diese Routing startet die Suchhilfe für ein beliebiges Feld. Bevor die Routine aufgerufen wird, muss das Feld zuerst geclick werden.
+'!
+
+'!
+Sub PressF4()
+	Set objKeys = CreateObject("wscript.shell")
+	objKeys.SendKeys "{F4}"
+	wait 2
+	Set objKeys = Nothing
+End Sub

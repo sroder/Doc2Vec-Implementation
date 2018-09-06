@@ -1,0 +1,11 @@
+'-----------------------------------------------------------------------------------------------------------------------------------------------
+'! Diese Routing betätigt die Enter-Taste in ein beliebiges Feld. Bevor die Routine aufgerufen wird, muss das Feld zuerst geclickt werden.
+'!
+
+'!
+Sub PressEnter()
+	Set objKeys = CreateObject("wscript.shell")
+	objKeys.SendKeys "{ENTER}"
+	wait 2
+	Set objKeys = Nothing
+End Sub

@@ -1,0 +1,25 @@
+'! Routine klickt auf den Initialisierungs-Button und löst damit die Bildschirminitialisierung aus. Dabei werden z.B. gelöschte Tabellenzeilen,
+'! die mit dem Zeilen-Löschbutton gelöscht wurden, wieder hergestellt.
+'!
+
+'!
+Public Sub PressInitialize(timeOut)
+	
+	Dim i
+	
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").Sync
+	
+	i = 0
+	While not SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Initialize").Exist(0) and i <= timeOut
+		wait 1
+		i = i + 1
+	Wend
+	
+	If SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Initialize").Exist(0) Then
+		SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Initialize").Click
+		wait 3
+	else
+		Reporter.ReportEvent micFail,"TimeOut beim Initialisieren","Menu"
+	End If
+	
+End Sub

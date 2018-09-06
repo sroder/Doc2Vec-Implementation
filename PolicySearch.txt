@@ -1,0 +1,22 @@
+Public Sub PolicySearch(id, timeOut)
+	
+
+	SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").SAPEdit("Policy ID").Set id
+	wait 1
+	SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").SAPButton("Search").Click
+
+	'While not SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").WebElement("html tag:=A","innertext:="&id).Exist and i <= timeOut
+	While not SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").WebTable("Results List").WebElement("html tag:=SPAN","innertext:="&id).Exist and i <= timeOut
+		wait 1
+		i = i + 1
+	Wend
+	
+	If i <= timeOut Then
+		Reporter.ReportEvent micPass, "Search Policy", "Alles in Ordnung! Policy Id ist vorhanden"	
+	else
+		Reporter.ReportEvent micFail, "Search Policy", "Timeout - Policy " & id & " cannot be find!"
+	End If
+	
+
+
+End Sub

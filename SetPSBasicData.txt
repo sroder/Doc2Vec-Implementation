@@ -1,0 +1,162 @@
+'-----------------------------------------------------------------------------------------------------------------------------------------------
+'! Diese Routine befüllt den Bereich der Policengrunddaten (Policy Basic Data) anhand der übergebenen Daten.
+'! 
+'! @param  CompanyCode		Buchungskreis, für den die Police angelegt wird
+'! @param  Category			Policenkategorie oder Art der Police (z.B. Unfall, Haftpflicht, ...)
+'! @param  PolicyNr			Identifikationsnummmer der Police
+'! @param  PolicyDescrip	textuelle Beschreibung der Police oder Name der Police
+'! @param  PeriodStart		Beginndatum der Police - Startzeitpunkt, wann die Laufzeit der Police beginnt
+'! @param  PeriodEnd		Endedatum der Police - Endzeitpunkt, wann die Laufzeit der Police endet
+'! @param  TimeRule			definiert der Police zugrundeliegende Stundenregel (0h, 12h, 24h)
+'! @param  PolicyHolder		definiert den Business Partner, welcher Inhaber der Police ist
+'! @param  Cedent			definiert den Business Partner, welcher als Versicherer ein Risiko abgibt
+'! @param  Broker			Makler, welcher die Police vermittelt hat
+'! @param  DayRule			Jahres-Tagesregel (360,365,366), welche für Berechnungen zu Grunde gelegt wird 
+'! @param  Status			Status der Police z.B. Neu, In Bearbeitung, Bearbeitung abgeschlossen (NEW, INPRO, COMPL, ...)
+'! @param  ReasonforChange  Änderungsgrund
+'! @param  LiabilityMethod  Berechnungsmethode für die Haftungsermittlung
+'! @param  timeOut definiert die Zeit, welche gewartet wird, um den Anlagebutton (New) zu erkennen bzw. wartet diese Zeit, bis dieser Button sichtbar ist.
+
+'!
+Public Sub SetPolicyBasicData(CompanyCode,Category,PolicyNr,PolicyDescrip,PeriodStart,PeriodEnd,TimeRule,PolicyHolder,Cedent,Broker,DayRule,Status,ReasonforChange,LiabilityMethod,timeOut)
+	
+	Dim objPage 	'object of web page SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data")
+	Dim replayType
+	Dim vEmpty
+	
+	Set objPage = SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data")
+	
+	ChangeToPolicyBasicData
+'	wait 2
+
+
+	
+	objPage.SAPEdit("* Company Code:").WaitProperty "visible",True,timeOut*1000
+	
+	objPage.SAPEdit("* Company Code:").Set CompanyCode
+'	ValidatePolicyBasicData objPage.SAPEdit("* Company Code:"), CompanyCode, timeOut 
+	
+	objPage.SAPEdit("* Category:").Set Category
+'	ValidatePolicyBasicData objPage.SAPEdit("* Category:"), Category, timeOut
+	
+	If objPage.SAPEdit("* Policy:").GetROProperty("readonly") = 0 Then	
+		objPage.SAPEdit("* Policy:").Set PolicyNr
+	'	ValidatePolicyBasicData objPage.SAPEdit("* Policy:"), PolicyNr, timeOut
+	End if
+	
+	
+	PolicyDescrip = PolicyDescrip & "_" & Date & " " & Time
+	
+	objPage.SAPEdit("Policy Name:").Set Left(PolicyDescrip, 39)
+'	ValidatePolicyBasicData objPage.SAPEdit("Policy Name:"), PolicyDescrip, timeOut
+		If objPage.SAPCalendar("* Policy Start Date").Exist(2) Then
+		objPage.SAPCalendar("* Policy Start Date").SetDate PeriodStart	
+	else
+		objPage.SAPEdit("* Period start:").Set PeriodStart
+	end if
+	
+	'schleife fürs setzen des Feldes PeriodStart
+	'##################################################################################################################################################################
+	If objPage.SAPCalendar("* Policy Start Date").Exist(2) Then
+		i = 0
+		While Cstr(objPage.SAPCalendar("* Policy Start Date").GetROProperty("Value")) <> Cstr(PeriodStart) and i < timeOut
+			objPage.SAPCalendar("* Policy Start Date").SetDate PeriodStart
+			wait 1
+			i = i + 1
+		Wend
+		
+		If i >= timeOut Then
+			Reporter.ReportEvent micFail,"TimeOut beim setzen des Feldes Period","Bitte Prüfen - Wert Soll: " & PeriodStart
+		End If
+	else
+		objPage.SAPEdit("* Period start:").Set PeriodStart
+	end if
+	'################################################################################################################################################################
+
+	If objPage.SAPCalendar("Policy End Date").Exist(2) Then
+		objPage.SAPCalendar("Policy End Date").SetDate PeriodEnd
+	else
+		objPage.SAPEdit("* Period end:").Set PeriodEnd
+	End If
+	
+	'schleife fürs setzen des Feldes PeriodEnd
+	'##################################################################################################################################################################
+	If objPage.SAPCalendar("Policy End Date").Exist(2) Then
+		i = 0
+		While Cstr(objPage.SAPCalendar("Policy End Date").GetRoProperty("Value")) <> Cstr(PeriodEnd) and i < timeOut
+			objPage.SAPCalendar("Policy End Date").SetDate PeriodEnd
+			wait 1
+			i = i + 1
+		Wend 
+	
+		If i >= timeOut Then
+			Reporter.ReportEvent micFail,"TimeOut beim setzen des Feldes Period","Bitte Prüfen - Wert Soll: " & PeriodEnd
+		End If
+	else
+		objPage.SAPEdit("* Period end:").Set PeriodEnd
+	end if
+	'################################################################################################################################################################
+
+
+	'RS-20160915: Zwischenzeitlich auskommentiert, da ein neues Konzept für den Änderungsgrund bearbeitet & programmmiert wird
+	'objPage.SAPEdit("* Reason for Change:").Set ReasonforChange
+	'	ValidatePolicyBasicData objPage.SAPEdit("* Reason for Change:"), ReasonforChange, timeOut
+
+	objPage.SAPEdit("* Time Rule:").Set TimeRule
+'	ValidatePolicyBasicData objPage.SAPEdit("* Time Rule:"), TimeRule, timeOut
+	
+	objPage.SAPEdit("* Policyholder:").Set PolicyHolder
+'	ValidatePolicyBasicData objPage.SAPEdit("* Policyholder:"), PolicyHolder, timeOut
+	
+	objPage.SAPEdit("* Cedent:").Set Cedent
+'	ValidatePolicyBasicData objPage.SAPEdit("* Cedent:"), Cedent, timeOut
+
+	objPage.SAPEdit("Broker:").Set Broker
+	ValidatePolicyBasicData objPage.SAPEdit("Broker:"), Broker, timeOut
+		
+	If objPage.WebElement("Show Additional Fields").Exist(1) Then
+		objPage.WebElement("Show Additional Fields").Click
+		objPage.SAPEdit("* Method for Liability").WaitProperty "visible",True,timeOut*1000
+	End If
+	
+	'RS-20160915 - Auskommentiert aufgrund der Überarbeitung des Konzepts für den Änderungsgrund
+	'objPage.SAPEdit("* Status:").Set Status
+'	ValidatePolicyBasicData objPage.SAPEdit("* Status:"), Status, timeOut
+	
+	objPage.SAPEdit("* Method for Liability").Set LiabilityMethod
+
+	wait 2
+	If DayRule = "360" Then
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+		Set obj = createObject("Mercury.DeviceReplay")
+		obj.SendString "360 Days Per Year Rule"
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Submit
+		Set obj = Nothing
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+'		wait 1
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").WebElement("role:=listitem","innertext:="&"360 Days Per Year Rule").Click
+'		wait 2
+	ElseIf DayRule = "365" Then
+	
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+		Set obj = createObject("Mercury.DeviceReplay")
+		obj.SendString "365 Days Per Year Rule"
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Submit
+		Set obj = Nothing
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+'		wait 1
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").WebElement("role:=listitem","innertext:="&"365 Days Per Year Rule").Click
+'		wait 2
+	ElseIf DayRule = "366" Then
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+		Set obj = createObject("Mercury.DeviceReplay")
+		obj.SendString "366 Days Per Year Rule"
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Submit
+		Set obj = Nothing
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPList("Day Rule").Object.Click
+'		wait 1
+'		SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").WebElement("role:=listitem","innertext:="&"366 Days Per Year Rule").Click
+'		wait 2
+	End If
+
+End Sub

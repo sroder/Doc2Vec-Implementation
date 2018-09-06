@@ -1,0 +1,47 @@
+'! Routine drück auf dem UIBB New Button.
+
+
+Sub PressUIBBNewButton(byRef objWebTable)
+	
+	Dim buttonDescription, buttonList
+	
+
+	If objWebTable.Exist(3) Then
+
+		Set buttonList = Nothing
+		Set buttonDescription = Nothing
+		
+		Set buttonDescription = Description.Create
+		buttonDescription("micclass").Value = "SAPButton"
+		buttonDescription("name").Value = "New"
+		buttonDescription("html tag").Value = "DIV"
+		
+		
+		
+		
+		
+		Set buttonList = objWebTable.ChildObjects(buttonDescription)
+		'wait 2
+		
+		i = 0
+		While buttonList.Count = 0 and i < 5
+			i = i + 1
+			wait 1
+		Wend
+		
+		buttonList(0).Click
+		Wait 1
+		
+		Set buttonList = Nothing
+		Set buttonDescription = Nothing
+		
+	else
+	
+		Reporter.ReportEvent micFail,"PressUIBBNewButton","Button New in UIBB konnte nicht geklickt werden!"
+
+	End If
+
+
+	
+	
+End Sub

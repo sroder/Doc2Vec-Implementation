@@ -1,0 +1,26 @@
+'! Mit dieser Routine können innerhalb ein Webtable bestimmte LINK ELEMENT geklickt werden
+
+
+
+sub Link_Element_click (WebTable_inWhich_toFind, Link_text_toClick, index)
+     
+     Set webElementX_desc= nothing
+     Set webElementX_desc = Description.Create
+     webElementX_desc("micclass").value = "WebElement"
+     webElementX_desc("html tag").value = "A"
+     
+     webElementX_desc("innertext").value = Link_text_toClick
+     Set webElementX_Child = WebTable_inWhich_toFind.ChildObjects(webElementX_desc)
+     child_count = webElementX_Child.count()
+     
+     	If child_count > 0 Then
+     		newindex = index - 1
+     		webElementX_Child(newindex).highlight
+     	 	webElementX_Child(newindex).click
+		else
+			Reporter.ReportEvent micFail,Link_text_toSearch,Link_text_toSearch + " ist nicht verfügbar"
+		End If
+	Set webElementX_desc= nothing
+	Set WebTable_inWhich_toFind = nothing
+	Set webElementX_Child = nothing
+End sub

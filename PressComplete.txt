@@ -1,0 +1,9 @@
+----------------------------------------------------------------------------------------------
+'!Routine clickt auf den Button Complete
+'!
+'! 
+'!
+Sub PressComplete()
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Complete").Click
+	wait 3
+End Sub

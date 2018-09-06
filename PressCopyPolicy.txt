@@ -1,0 +1,10 @@
+
+'------------------------------------------------------------------------------------
+'!Routine clickt auf den Button Copy(Policy)
+'!
+'!
+'!
+Sub PressCopyPolicy()
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Copy Policy").Click
+	wait 3
+End Sub

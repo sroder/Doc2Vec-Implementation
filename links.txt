@@ -1,0 +1,18 @@
+https://medium.com/scaleabout/a-gentle-introduction-to-doc2vec-db3e8c0cce5e
+https://radimrehurek.com/gensim/
+https://medium.com/@david.campion/text-generation-using-bidirectional-lstm-and-doc2vec-models-1-3-8979eb65cb3a
+https://medium.com/@david.campion/text-generation-using-bidirectional-lstm-and-doc2vec-models-2-3-f0fc07ee7b30
+http://karpathy.github.io/2015/05/21/rnn-effectiveness/
+
+https://github.com/campdav/text-rnn-keras
+https://github.com/campdav/text-rnn-tensorflow
+
+-------------------------------
+CNNs for the same thing. It has used padding in sentences to make them 
+of same dimension -> Map words in these padded sentences using word embedding -> Apply CNN -> Use Max-overtime pooling -> 
+Feed to fully connected layer -> Get the representation. They have written that initializing word embedding using word2vec
+ then fine tuning by back propagation gave better results than ‘without tuning’ and ‘random initialization’.
+
+
+---------sentence vector medium------
+https://medium.com/explorations-in-language-and-learning/how-to-obtain-sentence-vectors-2a6d88bd3c8b

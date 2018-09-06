@@ -1,0 +1,36 @@
+! Routine klickt auf den Speicher-Button und löst damit den Speichervorgang aus. Im Anschluss wird geprüft, ob die Erfolgsmeldung erscheint.
+'!
+
+Public Sub PressSave(timeOut)
+
+	Dim success
+	
+	success = false
+	
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").Sync
+		
+	If SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Save").Exist(timeOut) Then
+		SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Save").Click	
+	else
+		Reporter.ReportEvent micFail,"SaveButton","Save Button existiert nicht!"
+	End If
+
+	If SAPNWBCShellWindow("msg.PUMA").Page("Menu").WebElement("Data has been saved").Exist(timeOut) Then
+		If SAPNWBCShellWindow("msg.PUMA").Page("Menu").WebElement("Data has been saved").WaitProperty("visible",True,timeOut+1000) Then
+			success = true
+		else
+			success = false
+		End If
+	else
+		success = false
+	End If
+
+	If success = false  or i >= timeout Then
+		Reporter.ReportEvent micFail,"Checkpoint Save","Meldung '" + messageText + "' existiert nicht"
+	else
+		Reporter.ReportEvent micPass,"Checkpoint Save","Meldung '" + messageText + "' existiert."
+	End If	
+	
+	
+
+End Sub

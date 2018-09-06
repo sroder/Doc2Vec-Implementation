@@ -1,0 +1,57 @@
+Public Sub NewPolicySection(byVal SectionType, byVal timeOut)
+	
+	Dim errorMessage, i
+	
+	errorMessage = True
+	
+	
+	Set oDesc = Description.Create()
+    oDesc("micclass").Value = "SAPButton"
+    oDesc("html tag").Value = "DIV"
+    oDesc("name").Value = "New"
+    oDesc("outertext").Value = "New"
+    
+    
+    Set objList = SAPNWBCShellWindow("msg.PUMA").Page("Policy Section").WebTable("Policy Sections").ChildObjects(oDesc)
+    
+    Set newButton = objList(0)
+	
+	if newButton.WaitProperty("visible",True,timeOut*1000) then
+		newButton.Click
+		
+		If SAPNWBCShellWindow("msg.PUMA").Page("Policy Section").SAPDropDownMenu("New_DropDown").WaitProperty("visible",True,timout*4000) Then
+		
+			Select Case SectionType
+				Case "CP"
+					SAPNWBCShellWindow("msg.PUMA").Page("Policy Section").SAPDropDownMenu("New_DropDown").Select "Cedent Proportional"
+				Case "CNP"
+					SAPNWBCShellWindow("msg.PUMA").Page("Policy Section").SAPDropDownMenu("New_DropDown").Select "Cedent Non-Proportional"	
+				case else
+						Reporter.ReportEvent micFail,"PolicySection!","Falscher Parameter für die Auswahl des Typs der PolicySection"
+			End Select		
+			
+		End If
+	
+		errorMessage = False
+	End if
+	
+	
+	If errorMessage Then
+		Reporter.ReportEvent micFail,"TimeOut bei Anlage einer Policy Section!","TimeOut bei Anlage einer Policy Section!"
+	End If
+
+	i = 0
+	
+	While not SAPNWBCShellWindow("msg.PUMA").Page("Main Structural Characteristics").WebElement("Main Structural Characteristic").Exist and i <= timeOut
+		wait 1
+		i  = i +1	
+	Wend
+	
+	If i > timeOut Then
+		Reporter.ReportEvent micFail,"TimeOut bei Anlage einer Policy Section!","TimeOut bei Anlage einer Policy Section!"
+	End If
+
+	
+
+
+End Sub

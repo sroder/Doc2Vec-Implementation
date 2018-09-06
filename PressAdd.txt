@@ -1,0 +1,9 @@
+'-----------------------------------------------------------------------------------------------------------------
+'!Routine klickt auf den Button ADD
+'!
+'! 
+'!
+Sub PressAdd()
+	SAPNWBCShellWindow("msg.PUMA").Page("Menu").SAPButton("Add").Click
+	wait 3
+End Sub

@@ -1,0 +1,11 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+! Neue Policy anlegen
+
+Public Sub SetPolicySearch(timeOUt)
+
+
+	SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").SAPButton("New").Click	
+	
+	If SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").WebElement("New Individual Policy").WaitProperty("visible",True,5000) Then
+		SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").WebElement("New Individual Policy").Click
+End Sub

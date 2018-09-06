@@ -1,0 +1,48 @@
+'! Mit dieser Routine können innerhalb des Meldungsfensters bestimmte Meldungen gesucht werden
+'!
+'! @param  messageText	Text der Meldung die gesucht werden soll
+
+Sub searchMessage(messageText)
+	Dim oDesc_SapTable, oDesc_WEBElement, TableList, WEBElementList, success
+	
+	i = 0
+	While SAPNWBCShellWindow("msg.PUMA").Page("Menu").WebElement("html tag:=SPAN","innertext:=No Messages           ").Exist(0) and i <= 10
+		i = i +  1
+		wait 1
+	Wend
+	
+	success = false
+	
+	Set oDesc_SapTable = Description.Create()
+    Set oDesc_WEBElement = Description.Create()
+
+    oDesc_WEBElement("micclass").Value = "WEBElement" 
+    oDesc_SapTable("micclass").Value = "SAPTable" 
+	
+		If SAPNWBCShellWindow("msg.PUMA").Page("Participations").Exist(3) Then
+			Set TableList = SAPNWBCShellWindow("msg.PUMA").Page("Participations").ChildObjects(oDesc_SapTable)
+		ElseIf SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").Exist(3) Then
+			Set TableList = SAPNWBCShellWindow("msg.PUMA").Page("Policy Search").ChildObjects(oDesc_SapTable)
+		Else
+			Set TableList = SAPNWBCShellWindow("msg.PUMA").Page("MyPUMA").ChildObjects(oDesc_SapTable)
+		End If	
+
+    
+	
+    Set WEBElementList = TableList(0).ChildObjects(oDesc_WEBElement)
+
+	For i = 0 to WEBElementList.count() - 1
+		'print  WEBElementList(i).GetROProperty("innertext") & "  Länge: " & len(WEBElementList(i).GetROProperty("innertext")) & " Vgl-String: " & messageText & " Länge: " & len(messageText)
+		If WEBElementList(i).GetROProperty("innertext") = messageText Then
+			Reporter.ReportEvent micPass,"Checkpoint ","Meldung '" + messageText + "' existiert"
+			success = true
+			Exit for
+		End If
+	Next
+	
+	If success = false Then
+		Reporter.ReportEvent micFail,"Checkpoint ","Meldung '" + messageText + "' existiert nicht"
+	End If	
+    
+	
+End Sub

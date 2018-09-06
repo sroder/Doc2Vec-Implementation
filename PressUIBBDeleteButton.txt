@@ -1,0 +1,13 @@
+'! Routine drück auf dem UIBB Delete Button. Diese Routine muss aufgerufen werden, nachdem eine Zeile selektiert wurde
+
+
+
+Sub PressUIBBDeleteButton(byVal objWebTable)
+	Set buttonDescription = Description.Create
+	buttonDescription("micclass").Value = "SAPButton"
+	buttonDescription("name").Value = "Delete"
+	buttonDescription("html tag").Value = "DIV"
+	Set buttonList = objWebTable.ChildObjects(buttonDescription)
+	buttonList(0).Click
+	Wait 2
+End Sub

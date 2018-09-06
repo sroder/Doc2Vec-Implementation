@@ -1,0 +1,7 @@
+--------------------------------------------------------------------------------
+
+
+
+'!Routine prüft auf den Wert
+
+SAPNWBCShellWindow("msg.PUMA").Page("Policy Basic Data").SAPEdit("* Policy:").Checkproperty "value",SomeValue,1500
